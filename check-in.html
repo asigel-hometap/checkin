@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homeowner Check-In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Mulish', sans-serif; text-align: center; margin: 50px; }
+        .container { max-width: 500px; margin: auto; }
+        button { background-color: #366ced; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        button:disabled { background-color: #ccc; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Page -->
+        <div id="start-page">
+            <h1>We’re here to help</h1>
+            <p>Take a few minutes to answer some questions about the state of your home and your finances and we’ll provide you with personalized recommendations to help you make the most of homeownership.</p>
+            <button onclick="showPage('settle-page')">Begin</button>
+        </div>
+        
+        <!-- Settle Page -->
+        <div id="settle-page" class="hidden">
+            <h1>Settling your HEI</h1>
+            <p>Your Home Equity Investment with us must be settled no later than September 23, 2033. What is your current plan to settle your investment?</p>
+            <input type="radio" name="settle-plan" value="homesale"> Sell my home<br>
+            <input type="radio" name="settle-plan" value="loan"> Home equity loan or HELOC<br>
+            <input type="radio" name="settle-plan" value="refi"> Cash-out refinance<br>
+            <input type="radio" name="settle-plan" value="savings"> Buyout with savings<br>
+            <input type="radio" name="settle-plan" value="none"> I don’t have a plan currently<br>
+            <button onclick="handleSettleSelection()">Continue</button>
+        </div>
+        
+        <!-- Stressors Page -->
+        <div id="stressors-page" class="hidden">
+            <h1>Financial Stress</h1>
+            <p>Which of the following have caused you the most stress in the past 6 months?</p>
+            <input type="radio" name="stressor" value="debt"> Paying off debt<br>
+            <input type="radio" name="stressor" value="bills"> Paying regular bills<br>
+            <input type="radio" name="stressor" value="education"> Financial education<br>
+            <input type="radio" name="stressor" value="retirement"> Saving for retirement<br>
+            <input type="radio" name="stressor" value="none"> I have no financial stress<br>
+            <button onclick="showPage('outcome-page')">Finish</button>
+        </div>
+        
+        <!-- Outcome Page -->
+        <div id="outcome-page" class="hidden">
+            <h1>All done!</h1>
+            <p id="settle-outcome"></p>
+            <p id="stressor-outcome"></p>
+        </div>
+    </div>
+
+    <script>
+        let selectedSettlePlan = null;
+        let selectedStressor = null;
+        
+        function showPage(pageId) {
+            document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+            if (pageId === 'outcome-page') {
+                displayOutcomeMessage();
+            }
+        }
+        
+        function handleSettleSelection() {
+            selectedSettlePlan = document.querySelector('input[name="settle-plan"]:checked')?.value;
+            if (selectedSettlePlan === "none") {
+                showPage('outcome-page');
+            } else {
+                showPage('stressors-page');
+            }
+        }
+
+        function displayOutcomeMessage() {
+            const settleText = {
+                "none": "It’s okay. You still have about 8 years before you’d owe us any money, but it’s always good to know your options.\n\n" +
+                         "You can:\n- Settle via loan or HELOC\n- Settle with cash savings\n- Settle with a refinance\n- Settle with a home sale\n\n" +
+                         "Before we check in again, you should read up on your settlement options. In the meantime, keep being you, superstar.",
+                "homesale": "Whenever you’re ready to settle via home sale, our partners at Simplist can help you find the best mortgage for you on a new home, and you can save $1,000 at closing.",
+                "loan": "Whenever you’re ready to settle via a loan or HELOC, be sure to review our guide to ensure a stress-free process.",
+                "refi": "Whenever you’re ready to settle via cash-out refinance, our partners at Simplist can help you find the best mortgage for you, and you can save $1,000 at closing.",
+                "savings": "Well look at you, Moneybags. Great job saving for the future! Need some help setting up tax shelters?"
+            };
+            document.getElementById("settle-outcome").innerText = settleText[selectedSettlePlan] || "";
+
+            selectedStressor = document.querySelector('input[name="stressor"]:checked')?.value;
+            const stressorText = {
+                "debt": "Debt sucks, bruh.",
+                "bills": "Bills suck, bruh.",
+                "education": "Looks like you need to meet our good friend, Enrich.",
+                "retirement": "Growing old is hard.",
+                "none": "Must be nice to have no problems at all."
+            };
+            document.getElementById("stressor-outcome").innerText = stressorText[selectedStressor] || "";
+        }
+    </script>
+</body>
+</html>
